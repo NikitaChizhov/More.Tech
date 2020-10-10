@@ -2,19 +2,18 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <UserSecretsId>aspnet-Skeptical.Beavers.Backend-6D58CACF-F28D-4782-9999-B17D60F9AB92</UserSecretsId>
+        <UserSecretsId>aspnet-Skeptical.Beavers.Backend-094148A8-1516-4FE8-B001-1DF50650DF74</UserSecretsId>
+        <WebProject_DirectoryAccessLevelKey>0</WebProject_DirectoryAccessLevelKey>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.8" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.6"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.6"/>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.6"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6"/>
+      <Folder Include="wwwroot" />
     </ItemGroup>
 
 </Project>

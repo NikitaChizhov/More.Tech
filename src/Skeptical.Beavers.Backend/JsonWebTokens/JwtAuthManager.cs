@@ -2,9 +2,9 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Skeptical.Beavers.Backend.Configurations;
 
 namespace Skeptical.Beavers.Backend.JsonWebTokens
 {
@@ -56,14 +56,6 @@ namespace Skeptical.Beavers.Backend.JsonWebTokens
                     },
                     out var validatedToken);
             return (principal, validatedToken as JwtSecurityToken);
-        }
-
-        private static string GenerateRefreshTokenString()
-        {
-            var randomNumber = new byte[32];
-            using var randomNumberGenerator = RandomNumberGenerator.Create();
-            randomNumberGenerator.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
         }
     }
 }

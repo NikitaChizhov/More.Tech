@@ -1,8 +1,46 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B6B57F16-5A6E-44D5-BE86-4C70EDAAB072}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Skeptical.Beavers.Backend", "src\Skeptical.Beavers.Backend\Skeptical.Beavers.Backend.csproj", "{0099597A-4B80-454F-874C-808068F2EBA5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{CE76867F-DAE7-42D6-B86B-CBCF2A097F8B}"
+ProjectSection(SolutionItems) = preProject
+	front\.babelrc = front\.babelrc
+	front\package.json = front\package.json
+	front\server.js = front\server.js
+	front\webpack.config.js = front\webpack.config.js
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF0C2193-B6EC-485C-8C3B-E8EE84BFB15E}"
+ProjectSection(SolutionItems) = preProject
+	front\src\App.js = front\src\App.js
+	front\src\Home.js = front\src\Home.js
+	front\src\index.css = front\src\index.css
+	front\src\index.html.js = front\src\index.html.js
+	front\src\index.js = front\src\index.js
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{DC0FF15D-3548-4BCE-A7BE-C09CC7779B38}"
+ProjectSection(SolutionItems) = preProject
+	.gitignore = .gitignore
+	Dockerfile = Dockerfile
+	.dockerignore = .dockerignore
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0099597A-4B80-454F-874C-808068F2EBA5} = {B6B57F16-5A6E-44D5-BE86-4C70EDAAB072}
+		{EF0C2193-B6EC-485C-8C3B-E8EE84BFB15E} = {CE76867F-DAE7-42D6-B86B-CBCF2A097F8B}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0099597A-4B80-454F-874C-808068F2EBA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0099597A-4B80-454F-874C-808068F2EBA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0099597A-4B80-454F-874C-808068F2EBA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0099597A-4B80-454F-874C-808068F2EBA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

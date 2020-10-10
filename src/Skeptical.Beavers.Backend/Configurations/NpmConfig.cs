@@ -1,4 +1,7 @@
-$HEADER$namespace $NAMESPACE$
+namespace Skeptical.Beavers.Backend.Configurations
 {
-  $VISIBILITY$ sealed class $CLASS$ {$END$}
+    public sealed class NpmConfig
+    {
+        public string Prefix { get; set; }
+    }
 }

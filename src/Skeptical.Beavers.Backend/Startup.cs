@@ -1,22 +1,24 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
-using Skeptical.Beavers.Backend.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Skeptical.Beavers.Backend.Configurations;
+using Skeptical.Beavers.Backend.JsonWebTokens;
+using Skeptical.Beavers.Backend.Services;
 
 namespace Skeptical.Beavers.Backend
 {
     public class Startup
     {
+        public const string CorsPolicy = "AllowAll";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,12 +29,85 @@ namespace Skeptical.Beavers.Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddRazorPages();
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    options.SerializerSettings.MissingMemberHandling = MissingMemberHandling.Error;
+                });;
+
+            var npmConfig = new NpmConfig();
+            Configuration.GetSection("npm").Bind(npmConfig);
+            services.AddSingleton(npmConfig);
+
+            var jwtConfig = Configuration.GetSection("jwtConfig").Get<JwtConfig>();
+            services.AddSingleton(jwtConfig);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = true;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtConfig.Issuer,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtConfig.Secret)),
+                    ValidAudience = jwtConfig.Audience,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(1)
+                };
+            });
+
+            services
+                .AddSingleton<IJwtAuthManager, JwtAuthManager>()
+                .AddSingleton<IUserService, UserService>()
+                .AddSingleton<IAppsService, AppsService>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Sceptical Beavers Example API",
+                    Version = "v1",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Nikita Chizhov",
+                        Email = "nik96a@gmail.com"
+                    },
+                    Description = "Based on https://github.com/dotnet-labs/JwtAuthDemo"
+                });
+
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token **_only_**",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, new string[] { }}
+                });
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(CorsPolicy,
+                    builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,24 +116,27 @@ namespace Skeptical.Beavers.Backend
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseCors(CorsPolicy);
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("v1/swagger.json", "Sceptical Beavers API Example Swagger v1");
+                c.DocumentTitle = "Sceptical Beavers API Example Swagger";
+                c.RoutePrefix = "swagger";
+            });
+
         }
     }
 }

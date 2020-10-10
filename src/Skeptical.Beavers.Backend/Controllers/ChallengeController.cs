@@ -1,7 +1,13 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace Skeptical.Beavers.Backend.Controllers
 {
-    internal sealed class ChallengeController
+    public sealed class ChallengeController : BaseController
     {
-        
+        [HttpPost("/challenge")]
+        public IActionResult ConfirmAppIdentity()
+        {
+
+        }
     }
 }

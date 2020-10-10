@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace Skeptical.Beavers.Backend.JsonWebTokens
 {
-    internal interface IJwtAuthManager
+    public interface IJwtAuthManager
     {
         string GenerateToken(string username, Claim[] claims, DateTime now);
 

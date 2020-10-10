@@ -1,4 +1,9 @@
-$HEADER$namespace $NAMESPACE$
+namespace Skeptical.Beavers.Backend.Services
 {
-  $VISIBILITY$ interface $INTERFACE$ {$END$}
+    public interface IUserService
+    {
+        bool IsAnExistingUser(string userName);
+
+        bool IsValidUserCredentials(string userName, string password);
+    }
 }

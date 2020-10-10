@@ -1,7 +1,12 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
 namespace Skeptical.Beavers.Backend.Controllers
 {
-    internal sealed class BaseController
+    [ApiController]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public abstract class BaseController : Controller
     {
-        
+
     }
 }

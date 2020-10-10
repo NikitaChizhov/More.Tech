@@ -1,4 +1,9 @@
-$HEADER$namespace $NAMESPACE$
+namespace Skeptical.Beavers.Backend.Model
 {
-  $VISIBILITY$ sealed class $CLASS$ {$END$}
+    public sealed class LoginResponse
+    {
+        public string UserName { get; set; }
+
+        public string AccessToken { get; set; }
+    }
 }

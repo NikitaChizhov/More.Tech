@@ -1,4 +1,4 @@
-namespace Skeptical.Beavers.Backend.JsonWebTokens
+namespace Skeptical.Beavers.Backend.Configurations
 {
     internal sealed class JwtConfig
     {
