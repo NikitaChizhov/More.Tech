@@ -26,6 +26,7 @@ ProjectSection(SolutionItems) = preProject
 	.gitignore = .gitignore
 	Dockerfile = Dockerfile
 	.dockerignore = .dockerignore
+	README.md = README.md
 EndProjectSection
 EndProject
 Global
