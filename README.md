@@ -1,5 +1,7 @@
 ## Backend service for team Skeptical Beavers
 
+App is deployed at https://morning-tundra-59000.herokuapp.com/
+
 Repo with frontend: https://github.com/WhoAmIRUS/vtb-hackathon
 
 Repo with ml-drawing-based-captcha backend: https://github.com/maftukh/mouse_mapping_ml
