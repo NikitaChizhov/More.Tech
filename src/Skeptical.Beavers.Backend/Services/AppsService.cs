@@ -8,6 +8,12 @@ namespace Skeptical.Beavers.Backend.Services
     {
         private readonly Dictionary<string, Guid> _ids = new Dictionary<string, Guid>();
 
+        private readonly Dictionary<string, string> _appKeys = new Dictionary<string, string>()
+        {
+            {"admin", "secret test app key for admin"},
+            {"user1", "secret test app key for user1"}
+        };
+
         private static string GetAppDir(Guid appId) => $"/apps/{appId}";
 
         /// <inheritdoc />
@@ -45,5 +51,16 @@ namespace Skeptical.Beavers.Backend.Services
             var path = System.IO.Path.Combine(GetAppDir(appId), "bundle.js");
             return System.IO.File.ReadAllTextAsync(path);
         }
+
+        /// <inheritdoc />
+        public string GenerateAndRememberAppKey(string userName)
+        {
+            var appKey = Guid.NewGuid().ToString("N");
+            _appKeys[userName] = appKey;
+            return appKey;
+        }
+
+        /// <inheritdoc />
+        public bool IsThisUsersAppKey(string userName, string appKey) => _appKeys.TryGetValue(userName, out var savedKey) && appKey == savedKey;
     }
 }

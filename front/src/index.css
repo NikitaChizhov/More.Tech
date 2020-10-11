@@ -9,15 +9,14 @@
 
 body {
     margin: 0;
-    background: #76b852; /* fallback for old browsers */
-    background: -webkit-linear-gradient(right, #76b852, #8DC26F);
-    background: -moz-linear-gradient(right, #76b852, #8DC26F);
-    background: -o-linear-gradient(right, #76b852, #8DC26F);
-    background: linear-gradient(to left, #76b852, #8DC26F);
     font-family: "Open Sans", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     width: 100%;
+    background-color: #fafafa;
+    background-image: url("https://sun9-28.userapi.com/I6L9tURT0IYFD-mRstWwxyU1GLg9AoGb2aTjfw/2DnsGlg1dvI.jpg");
+    background-repeat: no-repeat;
+    background-size: 60vw auto;
 }
 
 code {
@@ -34,10 +33,6 @@ code {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #fafafa;
-    background-image: url("https://sun9-28.userapi.com/I6L9tURT0IYFD-mRstWwxyU1GLg9AoGb2aTjfw/2DnsGlg1dvI.jpg");
-    background-repeat: no-repeat;
-    background-size: 60vw auto;
 }
 
 .wrapper {

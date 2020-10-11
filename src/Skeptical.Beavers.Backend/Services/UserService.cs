@@ -10,7 +10,8 @@ namespace Skeptical.Beavers.Backend.Services
 
         private readonly ConcurrentDictionary<string, string> _users = new ConcurrentDictionary<string, string>(new Dictionary<string, string>
         {
-            { "admin", "admin" }
+            { "admin", "admin" },
+            { "user1", "user1" }
         });
 
         public UserService(ILogger<UserService> logger)

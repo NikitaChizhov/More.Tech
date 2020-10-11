@@ -6,8 +6,6 @@ namespace Skeptical.Beavers.Backend.Challenges
     {
         string ChallengeFunction { get; }
 
-        string FunctionCall { get; }
-
         bool IsPassed(ChallengeRequest receivedRequest);
     }
 }

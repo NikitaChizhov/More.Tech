@@ -45,7 +45,7 @@ namespace Skeptical.Beavers.Backend.Controllers
 
             var appId= Guid.NewGuid();
             var challengeKey = _obfuscatedEndpoints.StoreEndpoint($"/challenge/{appId}");
-            var challengeData = new ChallengeRequest{ Data = RandomNumberGenerator.GetInt32(int.MaxValue).ToString() };
+            var challengeData = new ChallengeRequest{ Data = "random data" };
             var challenge = new FixedDataSenderChallenge(challengeData, $"/{challengeKey}");
 
             BuildApp(challenge);
@@ -73,7 +73,6 @@ namespace Skeptical.Beavers.Backend.Controllers
             var template = System.IO.File.ReadAllText(templatePath);
             var targetPath = System.IO.Path.Combine(_npmConfig.Prefix, "src/Home.js");
             System.IO.File.WriteAllText(targetPath, template
-                .Replace("//_}%1%{_", challenge.FunctionCall)
                 .Replace("//_}*1*{_", challenge.ChallengeFunction));
 
             // npm build
@@ -97,8 +96,8 @@ namespace Skeptical.Beavers.Backend.Controllers
         private string ObfuscateEndpoints(in string str)
         {
             var transactionKey = _obfuscatedEndpoints.StoreEndpoint(Routes.Transaction);
-            return str;
-            // .Replace(Routes.Transaction, $"/{transactionKey}");
+            return str
+                .Replace(Routes.Transaction, $"/{transactionKey}");
         }
     }
 }
