@@ -2,7 +2,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Skeptical.Beavers.Backend.JsonWebTokens
+namespace Skeptical.Beavers.Backend.Utils
 {
     public interface IJwtAuthManager
     {

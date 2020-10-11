@@ -9,9 +9,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Skeptical.Beavers.Backend.Challenges;
 using Skeptical.Beavers.Backend.Configurations;
-using Skeptical.Beavers.Backend.JsonWebTokens;
+using Skeptical.Beavers.Backend.Obfuscation;
 using Skeptical.Beavers.Backend.Services;
+using Skeptical.Beavers.Backend.Utils;
 
 namespace Skeptical.Beavers.Backend
 {
@@ -66,7 +68,9 @@ namespace Skeptical.Beavers.Backend
             services
                 .AddSingleton<IJwtAuthManager, JwtAuthManager>()
                 .AddSingleton<IUserService, UserService>()
-                .AddSingleton<IAppsService, AppsService>();
+                .AddSingleton<IAppsService, AppsService>()
+                .AddSingleton<IChallengeRepository, ChallengeRepository>()
+                .AddSingleton<ObfuscatedEndpointsRepository>();
 
             services.AddSwaggerGen(c =>
             {
@@ -118,10 +122,9 @@ namespace Skeptical.Beavers.Backend
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseMiddleware<EndpointDeobfuscationMiddleware>();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-
             app.UseRouting();
             app.UseCors(CorsPolicy);
             app.UseAuthentication();

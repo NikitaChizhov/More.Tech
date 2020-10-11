@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
-let status = false;
+let status = '';
 
-//_}*1*{_
-// function identify(data) {
-//     return fetch('/challenge', {
-//         method: 'POST',
-//         headers: {
-//             'Authorization': `${localStorage.getItem('token')}` // if need
-//         },
-//         body: JSON.stringify(data) // some data in json
-//     })
-// }
+function identify(data) {
+    return fetch('url', {
+        method: 'POST', // or GET
+        headers: {
+            'Authorization': `${localStorage.getItem('token')}` // if need
+        },
+        body: JSON.stringify(data) // some data in json
+    })
+}
 
 // here we take response from server in res and if we catch error set status to fail
-//_}%1%{_
-// identify(123).then(res => status = res.ok)
+identify(123).then(res => status = 'SUCCESS').catch(res => status = 'FAIL')
 
 function Home() {
     const [ state, setState ] = useState();
@@ -24,11 +22,6 @@ function Home() {
     useEffect(() => {
         setState(status)
     }, [status])
-
-    useEffect(() => {
-        //_}%2%{_
-        // identify(123).then(res => status = res.ok)
-    }, [])
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -39,7 +32,7 @@ function Home() {
         formData.append("AccountHolder", "John Smith");
         formData.append("MoneySent", 10);
 
-        fetch('/transaction', {
+        fetch('https://morning-tundra-59000.herokuapp.com/transaction', {
             method: 'POST',
             headers: {
                 'Authorization': `${localStorage.getItem('token')}`
@@ -59,10 +52,12 @@ function Home() {
     return (
         <div className="home">
             <div className="home__panel panel">
-                <p className="status">auth status: <b>{state ? "Success" : "Failure"}</b></p>
+                <p className="status">auth status: <b>{state}</b></p>
                 <p className="status">transaction status: <b>{transactionStatus}</b></p>
                 <form className="form-home" onSubmit={onSubmit}>
-                    <input type="submit" value="SEND" className="button"/>
+                    <div className="form-home__button">
+                        <input type="submit" value="SEND" className="button"/>
+                    </div>
                 </form>
             </div>
         </div>

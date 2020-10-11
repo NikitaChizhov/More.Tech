@@ -6,7 +6,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Skeptical.Beavers.Backend.Configurations;
 
-namespace Skeptical.Beavers.Backend.JsonWebTokens
+namespace Skeptical.Beavers.Backend.Utils
 {
     internal sealed class JwtAuthManager : IJwtAuthManager
     {

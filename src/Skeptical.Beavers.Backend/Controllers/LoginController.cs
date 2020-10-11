@@ -4,9 +4,9 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Skeptical.Beavers.Backend.JsonWebTokens;
 using Skeptical.Beavers.Backend.Model;
 using Skeptical.Beavers.Backend.Services;
+using Skeptical.Beavers.Backend.Utils;
 
 namespace Skeptical.Beavers.Backend.Controllers
 {

@@ -1,10 +1,15 @@
 using System;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Skeptical.Beavers.Backend.Challenges;
 using Skeptical.Beavers.Backend.Configurations;
+using Skeptical.Beavers.Backend.Model;
+using Skeptical.Beavers.Backend.Obfuscation;
 using Skeptical.Beavers.Backend.Services;
 
 namespace Skeptical.Beavers.Backend.Controllers
@@ -18,11 +23,17 @@ namespace Skeptical.Beavers.Backend.Controllers
 
         private readonly IAppsService _apps;
 
-        public SecretAppController(ILogger<SecretAppController> logger, NpmConfig npmConfig, IAppsService apps)
+        private readonly IChallengeRepository _challengeRepository;
+
+        private readonly ObfuscatedEndpointsRepository _obfuscatedEndpoints;
+
+        public SecretAppController(ILogger<SecretAppController> logger, NpmConfig npmConfig, IAppsService apps, IChallengeRepository challengeRepository, ObfuscatedEndpointsRepository obfuscatedEndpoints)
         {
             _logger = logger;
             _npmConfig = npmConfig;
             _apps = apps;
+            _challengeRepository = challengeRepository;
+            _obfuscatedEndpoints = obfuscatedEndpoints;
         }
 
         [HttpGet("app")]
@@ -32,13 +43,18 @@ namespace Skeptical.Beavers.Backend.Controllers
             var userName = User?.Identity?.Name;
             if(userName == null) return Unauthorized();
 
-            _logger.LogInformation($"Building app for {userName}");
-            BuildApp();
-            var appId = _apps.NewApp(userName, "/front/dist");
-            var appHtml = await _apps.GetHtmlAsync(appId);
-            _logger.LogInformation(appHtml);
+            var appId= Guid.NewGuid();
+            var challengeKey = _obfuscatedEndpoints.StoreEndpoint($"/challenge/{appId}");
+            var challengeData = new ChallengeRequest{ Data = RandomNumberGenerator.GetInt32(int.MaxValue).ToString() };
+            var challenge = new FixedDataSenderChallenge(challengeData, $"/{challengeKey}");
 
-            return Content(appHtml, "text/html");
+            BuildApp(challenge);
+            _apps.PrepareAppToBeServed(appId, userName, "/front/dist");
+            _challengeRepository.SaveChallenge(challenge, userName, appId);
+
+            var indexHtml = await _apps.GetHtmlAsync(appId);
+
+            return Content(ObfuscateEndpoints(indexHtml), "text/html");
         }
 
         [HttpGet("app/{id:guid}/bundle.js")]
@@ -46,11 +62,20 @@ namespace Skeptical.Beavers.Backend.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetJs([FromRoute(Name = "id")] Guid appId)
         {
-            return Content(await _apps.GetJsBundleAsync(appId), "application/javascript");
+            var js = await _apps.GetJsBundleAsync(appId);
+            return Content(ObfuscateEndpoints(js), "application/javascript");
         }
 
-        private void BuildApp()
+        private void BuildApp(ISingleCallChallenge challenge)
         {
+            // place the challenge
+            var templatePath = System.IO.Path.Combine(_npmConfig.Prefix, "templates/HomeTemplate.js");
+            var template = System.IO.File.ReadAllText(templatePath);
+            var targetPath = System.IO.Path.Combine(_npmConfig.Prefix, "src/Home.js");
+            System.IO.File.WriteAllText(targetPath, template
+                .Replace("//_}%1%{_", challenge.FunctionCall)
+                .Replace("//_}*1*{_", challenge.ChallengeFunction));
+
             // npm build
             using var process = new Process();
             process.StartInfo.FileName = "npm";
@@ -67,6 +92,13 @@ namespace Skeptical.Beavers.Backend.Controllers
             }
 
             _logger.LogError(process.StandardError.ReadToEnd());
+        }
+
+        private string ObfuscateEndpoints(in string str)
+        {
+            var transactionKey = _obfuscatedEndpoints.StoreEndpoint(Routes.Transaction);
+            return str;
+            // .Replace(Routes.Transaction, $"/{transactionKey}");
         }
     }
 }

@@ -8,11 +8,11 @@ namespace Skeptical.Beavers.Backend.Services
     {
         private readonly Dictionary<string, Guid> _ids = new Dictionary<string, Guid>();
 
-        /// <inheritdoc />
-        public Guid NewApp(string userName, string distDir)
-        {
-            var appId = Guid.NewGuid();
+        private static string GetAppDir(Guid appId) => $"/apps/{appId}";
 
+        /// <inheritdoc />
+        public void PrepareAppToBeServed(Guid appId, string userName, string distDir)
+        {
             System.IO.Directory.CreateDirectory(GetAppDir(appId));
 
             if (_ids.TryGetValue(userName, out var oldValue))
@@ -30,8 +30,6 @@ namespace Skeptical.Beavers.Backend.Services
                 var destFileName = System.IO.Path.Combine(appDir, System.IO.Path.GetFileName(sourceFile));
                 System.IO.File.Copy(sourceFile, destFileName, true);
             }
-
-            return appId;
         }
 
         /// <inheritdoc />
@@ -42,12 +40,10 @@ namespace Skeptical.Beavers.Backend.Services
         }
 
         /// <inheritdoc />
-        public Task<string> GetJsBundleAsync(Guid appId) => System.IO.File.ReadAllTextAsync(System.IO.Path.Combine(GetAppDir(appId), "bundle.js"));
-
-        /// <inheritdoc />
-        public bool TryGetAppId(string userName, out Guid appId) => _ids.TryGetValue(userName, out appId);
-
-        /// <inheritdoc />
-        public string GetAppDir(Guid appId) => $"/apps/{appId}";
+        public Task<string> GetJsBundleAsync(Guid appId)
+        {
+            var path = System.IO.Path.Combine(GetAppDir(appId), "bundle.js");
+            return System.IO.File.ReadAllTextAsync(path);
+        }
     }
 }

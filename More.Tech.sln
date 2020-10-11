@@ -8,13 +8,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "front", "front", "{CE76867F
 ProjectSection(SolutionItems) = preProject
 	front\.babelrc = front\.babelrc
 	front\package.json = front\package.json
-	front\server.js = front\server.js
 	front\webpack.config.js = front\webpack.config.js
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EF0C2193-B6EC-485C-8C3B-E8EE84BFB15E}"
 ProjectSection(SolutionItems) = preProject
-	front\src\App.js = front\src\App.js
 	front\src\Home.js = front\src\Home.js
 	front\src\index.css = front\src\index.css
 	front\src\index.html.js = front\src\index.html.js
