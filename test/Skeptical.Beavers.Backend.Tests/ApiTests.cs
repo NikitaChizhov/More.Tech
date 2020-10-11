@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Skeptical.Beavers.Backend.Tests
 {
-    public class UnitTest1 : IDisposable
+    public class UnitTests : IDisposable
     {
         private readonly HttpClient _client = new HttpClient
         {
